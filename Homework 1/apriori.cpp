@@ -8,9 +8,9 @@
 /*
     References :-
     1. https://root-forum.cern.ch/t/reading-data-file-in-c-code/17126/2
+    2.
+   https://stackoverflow.com/questions/2393345/how-to-append-text-to-a-text-file-in-c
 */
-
-// TODO :- Sort the output lexographically before output.
 
 #include <algorithm>
 #include <cmath>
@@ -32,7 +32,7 @@
 using namespace std;
 
 #define sz(a) int((a).size())
-#define all(a) x.begin(), x.end()
+#define all(a) a.begin(), a.end()
 #define pb push_back
 #define endl '\n'
 #define watch(x) cout << #x << " : " << x << endl;
@@ -42,7 +42,9 @@ map<int, int> mp;
 map<int, int> cnts;
 vector<vector<int>> freq_sets, candidates;
 int support;
-const double threshold = 25;
+double threshold;
+string input_file, output_file;
+vector<string> final_out;
 
 void init_pass() {
 
@@ -50,8 +52,7 @@ void init_pass() {
 
   freq_sets.clear();
 
-  ifstream inputFile(
-      "/home/saksham/Desktop/DataMiningAssignments/Homework 1/webdocs.dat");
+  ifstream inputFile(input_file);
   string transaction;
   int item;
   while (getline(inputFile, transaction)) {
@@ -140,8 +141,7 @@ void generate_frequent_itemsets() {
   cnts.clear();
   // cnts.resize((candidates.size(), 0));
 
-  ifstream inputFile(
-      "/home/saksham/Desktop/DataMiningAssignments/Homework 1/webdocs.dat");
+  ifstream inputFile(input_file);
   string transaction;
   int item;
   vector<int> trans;
@@ -167,25 +167,54 @@ void generate_frequent_itemsets() {
   }
 }
 
-int main() {
+void output_freqsets() {
+  ofstream outdata;
+  outdata.open(output_file, ios_base::app);
+  for (auto itemset : freq_sets) {
+    final_out.clear();
+    for (auto item : itemset) {
+      final_out.pb(to_string(item));
+    }
+    sort(all(final_out));
+    for (int i = 0; i < sz(final_out); i++) {
+      outdata << final_out[i];
+      if (i != sz(final_out) - 1)
+        outdata << " ";
+    }
+    // for (auto item : final_out) {
+    //   outdata<<item<<" ";
+    // }
+    outdata << endl;
+  }
+  outdata.close();
+}
+
+int main(int argc, char *argv[]) {
+
+  input_file = argv[1];
+  threshold = 1.0 * stoi(argv[2]);
+  output_file = argv[3];
+  output_file += ".txt";
 
   init_pass();
+  output_freqsets();
 
-  for (auto v : freq_sets) {
-    for (auto x : v)
-      cout << x << " ";
-    cout << endl;
-  }
+  // for (auto v : freq_sets) {
+  //   for (auto x : v)
+  //     cout << x << " ";
+  //   cout << endl;
+  // }
 
   while (true) {
     candidate_gen();
     if (candidates.size() == 0)
       break;
     generate_frequent_itemsets();
-    for (auto v : freq_sets) {
-      for (auto x : v)
-        cout << x << " ";
-      cout << endl;
-    }
+    output_freqsets();
+    // for (auto v : freq_sets) {
+    //   for (auto x : v)
+    //     cout << x << " ";
+    //   cout << endl;
+    // }
   }
 }
