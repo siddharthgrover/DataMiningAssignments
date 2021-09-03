@@ -9,7 +9,8 @@ def main () :
     args = sys.argv
     input_file = args[1]
         
-    supports = [25, 50, 90]
+    # supports = [25, 50, 90]
+    supports = [90, 50, 25, 10 , 5]
     times_fp = []
     times_ap = []
     
@@ -23,8 +24,12 @@ def main () :
         times_ap.append(kp)
     
     
-    plt.plot(supports, times_fp, color ='tab:orange')
-    plt.plot(supports, times_ap, color ='tab:blue')
+    plt.plot(supports, times_fp, color ='tab:orange', label = 'FP-Tree')
+    plt.plot(supports, times_ap, color ='tab:blue', label = 'Apriori')
+    plt.xlabel('Support Threshold (Percentage)')
+    plt.ylabel('Execution Time (s)')
+    plt.legend(loc='upper right')
+    plt.savefig('plot.png')
     plt.show()
     
     
