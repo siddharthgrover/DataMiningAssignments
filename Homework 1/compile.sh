@@ -1,0 +1,1 @@
+g++ apriori.cpp -O3 -o apriori -std=c++11
