@@ -1,24 +1,5 @@
 from collections import defaultdict
 
-## preprocessing 
-# fin = open('./paths_finished.tsv','r')
-# fout = open('./paths_finished.dat','w')
-# line = fin.readline()
-# while(len(line)):
-#     if(len(line) > 1 and line[0] != '#'):
-#         path = line.split('\t')[3].split(';')
-#         parents = [None]
-#         for i in range(1,len(path)):
-#             if(path[i] == '<'):
-#                 path[i] = path[parents[-1]]
-#                 parents.append(parents[parents[-1]])
-#             else:
-#                 parents.append(i-1)
-#         fout.write(';'.join(path)+'\n')
-#     line = fin.readline()
-# fin.close()
-# fout.close()
-
 frequent_patterns = []
 
 def find_frequent_items(database, support):
@@ -72,12 +53,15 @@ def min_sequence(projected_database, support=2, prefix_list=list()):
 
 # MAIN #########
 import sys
+import os
 args = sys.argv
 
-support_percent = float(args[1])
+input_processed_file, support_percent, output_file_name = args[1], float(args[2]), args[3]
+
+assert os.path.isfile(input_processed_file), "Input file does not exists!!"
 
 ## full data in memory
-fin = open('./paths_finished.dat','r')
+fin = open(input_processed_file,'r')
 data = fin.readlines()
 def strip(l):
     return l[:-1].split(';')
@@ -85,18 +69,12 @@ data = list(map(strip,data))
 
 min_sequence(data, support=int(support_percent*0.01*len(data) + 0.5) )
 
-output_file_name = args[2]
 f = open(output_file_name + ".txt", "w")
 
-# sort patterns here
-
-# spiut in file
+# spit in file
 for pattern in frequent_patterns:
     for item in pattern:
         print(item, file=f, end=' ')
     print(file=f)
 
 f.close()
-
-# print(len(frequent_patterns))
-# print(sys.getsizeof(data))

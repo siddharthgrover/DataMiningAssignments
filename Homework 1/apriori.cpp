@@ -196,7 +196,7 @@ void output_freqsets() {
 int main(int argc, char *argv[]) {
 
   input_file = argv[1];
-  threshold = 1.0 * stoi(argv[2]);
+  threshold = 1.0 * stod(argv[2]);
   output_file = argv[3];
   output_file += ".txt";
 
