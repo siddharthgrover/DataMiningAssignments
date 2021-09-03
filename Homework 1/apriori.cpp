@@ -169,7 +169,11 @@ void generate_frequent_itemsets() {
 
 void output_freqsets() {
   ofstream outdata;
-  outdata.open(output_file, ios_base::app);
+  if (sz(freq_sets) == 0) return;
+
+  if (sz(freq_sets[0]) == 1) outdata.open(output_file);
+  else outdata.open(output_file, ios_base::app);
+
   for (auto itemset : freq_sets) {
     final_out.clear();
     for (auto item : itemset) {
